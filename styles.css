@@ -1,0 +1,240 @@
+/* Global Styles */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+/* Header */
+header {
+  background: #007bff;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 24px;
+}
+
+/* Navigation Bar */
+nav ul {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+  background: #0056b3;
+  margin: 0;
+  padding: 10px;
+}
+
+nav ul li {
+  display: inline;
+  margin: 0 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 15px;
+  transition: background 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+nav ul li a i {
+  margin-right: 5px;
+}
+
+nav ul li a:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+/* Main Section */
+main {
+  padding: 20px;
+}
+
+/* Section Titles */
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.actions-header {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.landing-page {
+  background: #007bff;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.landing-page h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.landing-page h3 {
+  font-size: 16px;
+  font-style: italic;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/* Buttons */
+button {
+  background: #28a745;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+button i {
+  margin-right: 5px;
+}
+
+button:hover {
+  background: #218838;
+}
+
+button.danger {
+  background: #dc3545;
+}
+
+button.danger:hover {
+  background: #c82333;
+}
+
+/* Input Fields */
+input,
+select {
+  width: 20%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin-top: 20px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+th:hover {
+  background: #0056b3;
+}
+
+/* Make Tables Scrollable for Mobile */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Modal Popups */
+.modal {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal h3 {
+  text-align: center;
+  color: #007bff;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal button {
+  margin-top: 10px;
+}
+
+/* Hide Sections Initially */
+.hidden {
+  display: none;
+}
+
+/* Small screens (up to 768px) */
+@media screen and (max-width: 768px) {
+  /* Make navigation buttons stack vertically */
+  nav ul {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  nav ul li {
+    margin: 5px 0;
+  }
+
+  /* Adjust buttons */
+  button {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* Make table scrollable */
+  .table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  table {
+    min-width: 600px; /* Prevent table from squeezing */
+  }
+
+  /* Adjust modals for smaller screens */
+  .modal {
+    width: 95%;
+  }
+
+  /* Fix padding for inputs */
+  input,
+  select {
+    padding: 12px;
+  }
+}

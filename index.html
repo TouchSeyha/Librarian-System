@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librarian System</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+
+  <header>
+    <h1>📖 Librarian System</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showSection('books')" title="books"><i class="material-icons">menu_book</i> Books</a>
+      </li>
+      <li><a href="#" onclick="showSection('visitors')" title="visitors"><i class="material-icons">person</i>
+          Visitors</a></li>
+      <li><a href="#" onclick="showSection('cards')" title="cards"><i class="material-icons">assignment</i> Cards</a>
+      </li>
+      <li><a href="#" onclick="showSection('statistics')" title="statistics"><i class="material-icons">bar_chart</i>
+          Statistics</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Landing Page -->
+
+    <section id="landing" class="landing-page">
+      <h1>Welcome to the Librarian System</h1>
+      <h3>click the navigation menu to manage books, visitors, cards, and view statistics.</h3>
+    </section>
+
+    <!-- Books Section -->
+    <section id="books" class="hidden">
+      <h2>📚 Books Management</h2>
+      <div class="actions-header">
+        <input type="text" id="bookSearch" placeholder="🔍 Search books..." onkeyup="searchBooks()">
+        <button onclick="openBookForm()"><i class="material-icons">add_circle</i> Add Book</button>
+      </div>
+      <div class="table-wrapper">
+        <table id="booksTable">
+          <thead>
+            <tr>
+              <th onclick="sortBooks('name')"><i class="material-icons">sort_by_alpha</i> Book Name</th>
+              <th onclick="sortBooks('author')"><i class="material-icons">person</i> Author</th>
+              <th onclick="sortBooks('copies')"><i class="material-icons">filter_9_plus</i> Copies</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Visitors Section -->
+    <section id="visitors" class="hidden">
+      <h2>👤 Visitor Management</h2>
+      <div class="actions-header">
+        <input type="text" id="visitorSearch" placeholder="🔍 Search visitors..." onkeyup="searchVisitors()">
+        <button onclick="openVisitorForm()"><i class="material-icons">person_add</i> Add Visitor</button>
+      </div>
+      <div class="table-wrapper">
+        <table id="visitorsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section id="cards" class="hidden">
+      <h2>📋 Borrowed Books</h2>
+      <button onclick="openCardForm()"><i class="material-icons">post_add</i> Lend a Book</button>
+      <div class="table-wrapper">
+        <table id="cardsTable">
+          <thead>
+            <tr>
+              <th>Visitor</th>
+              <th>Book</th>
+              <th>Borrow Date</th>
+              <th>Return Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section id="statistics" class="hidden">
+      <h2>📊 Library Statistics</h2>
+      <h3>📚 Top 5 Popular Books</h3>
+      <ul id="popularBooks"></ul>
+      <h3>🏆 Top 5 Active Visitors</h3>
+      <ul id="activeVisitors"></ul>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
