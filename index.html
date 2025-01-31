@@ -1,117 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Librarian System</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Librarian System</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-</head>
+  <body>
+    <header>
+      <h1>📖 Librarian System</h1>
+    </header>
 
-<body>
+    <nav>
+      <ul>
+        <li>
+          <a href="#" onclick="showSection('books')" title="books"
+            ><i class="material-icons">menu_book</i> Books</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showSection('visitors')" title="visitors"
+            ><i class="material-icons">person</i> Visitors</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showSection('cards')" title="cards"
+            ><i class="material-icons">assignment</i> Cards</a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="showSection('statistics')" title="statistics"
+            ><i class="material-icons">bar_chart</i> Statistics</a
+          >
+        </li>
+      </ul>
+    </nav>
 
-  <header>
-    <h1>📖 Librarian System</h1>
-  </header>
+    <main>
+      <!-- Landing Page -->
+      <section id="landing" class="landing-page">
+        <h1>Welcome to the Librarian System</h1>
+        <h3>
+          click the navigation menu to manage books, visitors, cards, and view
+          statistics.
+        </h3>
+      </section>
 
-  <nav>
-    <ul>
-      <li><a href="#" onclick="showSection('books')" title="books"><i class="material-icons">menu_book</i> Books</a>
-      </li>
-      <li><a href="#" onclick="showSection('visitors')" title="visitors"><i class="material-icons">person</i>
-          Visitors</a></li>
-      <li><a href="#" onclick="showSection('cards')" title="cards"><i class="material-icons">assignment</i> Cards</a>
-      </li>
-      <li><a href="#" onclick="showSection('statistics')" title="statistics"><i class="material-icons">bar_chart</i>
-          Statistics</a></li>
-    </ul>
-  </nav>
+      <!-- Books Section -->
+      <section id="books" class="hidden">
+        <h2>📚 Books Management</h2>
+        <div class="actions-header">
+          <input
+            type="text"
+            id="bookSearch"
+            placeholder="🔍 Search books..."
+            onkeyup="searchBooks()"
+          />
+          <button onclick="openBookForm()">
+            <i class="material-icons">add_circle</i> Add Book
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table id="booksTable">
+            <thead>
+              <tr>
+                <th onclick="sortBooks('name')">
+                  <i class="material-icons">sort_by_alpha</i> Book Name
+                </th>
+                <th onclick="sortBooks('author')">
+                  <i class="material-icons">person</i> Author
+                </th>
+                <th onclick="sortBooks('copies')">
+                  <i class="material-icons">filter_9_plus</i> Copies
+                </th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
 
-  <main>
-    <!-- Landing Page -->
+      <!-- Visitors Section -->
+      <section id="visitors" class="hidden">
+        <h2>👤 Visitor Management</h2>
+        <div class="actions-header">
+          <input
+            type="text"
+            id="visitorSearch"
+            placeholder="🔍 Search visitors..."
+            onkeyup="searchVisitors()"
+          />
+          <button onclick="openVisitorForm()">
+            <i class="material-icons">person_add</i> Add Visitor
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table id="visitorsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
 
-    <section id="landing" class="landing-page">
-      <h1>Welcome to the Librarian System</h1>
-      <h3>click the navigation menu to manage books, visitors, cards, and view statistics.</h3>
-    </section>
+      <!-- Cards Section -->
+      <section id="cards" class="hidden">
+        <h2>📋 Borrowed Books</h2>
+        <button onclick="openCardForm()">
+          <i class="material-icons">post_add</i> Lend a Book
+        </button>
+        <div class="table-wrapper">
+          <table id="cardsTable">
+            <thead>
+              <tr>
+                <th>Visitor</th>
+                <th>Book</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
 
-    <!-- Books Section -->
-    <section id="books" class="hidden">
-      <h2>📚 Books Management</h2>
-      <div class="actions-header">
-        <input type="text" id="bookSearch" placeholder="🔍 Search books..." onkeyup="searchBooks()">
-        <button onclick="openBookForm()"><i class="material-icons">add_circle</i> Add Book</button>
+      <!-- Statistics Section -->
+      <section id="statistics" class="hidden">
+        <h2>📊 Library Statistics</h2>
+        <h3>📚 Top 5 Popular Books</h3>
+        <ul id="popularBooks"></ul>
+        <h3>🏆 Top 5 Active Visitors</h3>
+        <ul id="activeVisitors"></ul>
+      </section>
+
+      <!-- Book Form Modal -->
+      <div id="bookForm" class="modal">
+        <h3>Add/Edit Book</h3>
+        <form onsubmit="saveBook(event)">
+          <input type="hidden" id="bookId" />
+          <label for="bookName">Name:</label>
+          <input type="text" id="bookName" required />
+          <label for="bookAuthor">Author:</label>
+          <input type="text" id="bookAuthor" required />
+          <label for="bookYear">Year:</label>
+          <input type="number" id="bookYear" required />
+          <label for="bookPublisher">Publisher:</label>
+          <input type="text" id="bookPublisher" required />
+          <label for="bookPages">Pages:</label>
+          <input type="number" id="bookPages" required />
+          <label for="bookCopies">Copies:</label>
+          <input type="number" id="bookCopies" required />
+          <div>
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeBookForm()">Cancel</button>
+          </div>
+        </form>
       </div>
-      <div class="table-wrapper">
-        <table id="booksTable">
-          <thead>
-            <tr>
-              <th onclick="sortBooks('name')"><i class="material-icons">sort_by_alpha</i> Book Name</th>
-              <th onclick="sortBooks('author')"><i class="material-icons">person</i> Author</th>
-              <th onclick="sortBooks('copies')"><i class="material-icons">filter_9_plus</i> Copies</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+
+      <!-- Visitor Form Modal -->
+      <div id="visitorForm" class="modal">
+        <h3>Add Visitor</h3>
+        <form onsubmit="saveVisitor(event)">
+          <label for="visitorName">Name:</label>
+          <input type="text" id="visitorName" required />
+          <label for="visitorPhone">Phone:</label>
+          <input type="text" id="visitorPhone" required />
+          <div>
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeVisitorForm()">Cancel</button>
+          </div>
+        </form>
       </div>
-    </section>
 
-    <!-- Visitors Section -->
-    <section id="visitors" class="hidden">
-      <h2>👤 Visitor Management</h2>
-      <div class="actions-header">
-        <input type="text" id="visitorSearch" placeholder="🔍 Search visitors..." onkeyup="searchVisitors()">
-        <button onclick="openVisitorForm()"><i class="material-icons">person_add</i> Add Visitor</button>
+      <!-- Visitor Form Modal -->
+      <div id="visitorForm" class="modal">
+        <h3>Add/Edit Visitor</h3>
+        <form onsubmit="saveVisitor(event)">
+          <input type="hidden" id="visitorId" />
+          <label for="visitorName">Name:</label>
+          <input type="text" id="visitorName" required />
+          <label for="visitorPhone">Phone:</label>
+          <input type="text" id="visitorPhone" required />
+          <div>
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeVisitorForm()">Cancel</button>
+          </div>
+        </form>
       </div>
-      <div class="table-wrapper">
-        <table id="visitorsTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+
+      <!-- Card Form Modal -->
+      <div id="cardForm" class="modal">
+        <h3>Lend a Book</h3>
+        <form onsubmit="saveCard(event)">
+          <label for="cardVisitor">Visitor:</label>
+          <select id="cardVisitor" required></select>
+          <label for="cardBook">Book:</label>
+          <select id="cardBook" required></select>
+          <label for="cardBorrowDate">Borrow Date:</label>
+          <input type="date" id="cardBorrowDate" required />
+          <div>
+            <button type="submit">Save</button>
+            <button type="button" onclick="closeCardForm()">Cancel</button>
+          </div>
+        </form>
       </div>
-    </section>
+    </main>
 
-    <!-- Cards Section -->
-    <section id="cards" class="hidden">
-      <h2>📋 Borrowed Books</h2>
-      <button onclick="openCardForm()"><i class="material-icons">post_add</i> Lend a Book</button>
-      <div class="table-wrapper">
-        <table id="cardsTable">
-          <thead>
-            <tr>
-              <th>Visitor</th>
-              <th>Book</th>
-              <th>Borrow Date</th>
-              <th>Return Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Statistics Section -->
-    <section id="statistics" class="hidden">
-      <h2>📊 Library Statistics</h2>
-      <h3>📚 Top 5 Popular Books</h3>
-      <ul id="popularBooks"></ul>
-      <h3>🏆 Top 5 Active Visitors</h3>
-      <ul id="activeVisitors"></ul>
-    </section>
-
-  </main>
-
-  <script src="script.js"></script>
-</body>
-
+    <script src="script.js"></script>
+  </body>
 </html>

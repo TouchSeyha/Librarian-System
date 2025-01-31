@@ -1,8 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
+  fetchDataAndInitialize();
   loadBooks();
   loadVisitors();
   loadCards();
+  loadStatistics();
 });
+
+// Fetch data from data.json and initialize local storage
+function fetchDataAndInitialize() {
+  fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      if (!localStorage.getItem("books")) {
+        localStorage.setItem("books", JSON.stringify(data.books));
+      }
+      if (!localStorage.getItem("visitors")) {
+        localStorage.setItem("visitors", JSON.stringify(data.visitors));
+      }
+      if (!localStorage.getItem("cards")) {
+        localStorage.setItem("cards", JSON.stringify(data.cards));
+      }
+    })
+    .catch((error) => console.error("Error fetching data:", error));
+}
 
 // Function to toggle sections
 function showSection(section) {
@@ -13,7 +33,7 @@ function showSection(section) {
 }
 
 // =========================
-// 📚 BOOKS MANAGEMENT
+// BOOKS MANAGEMENT
 // =========================
 function loadBooks() {
   let books = JSON.parse(localStorage.getItem("books")) || [];
@@ -25,7 +45,7 @@ function loadBooks() {
                     <td>${book.author}</td>
                     <td>${book.copies}</td>
                     <td>
-                        <button onclick="editBook(${book.id})">Edit</button>
+                        <button onclick="openBookForm(${book.id})">Edit</button>
                         <button onclick="deleteBook(${book.id})">Delete</button>
                     </td>
                   </tr>`;
@@ -138,7 +158,7 @@ function searchBooks() {
                     <td>${book.author}</td>
                     <td>${book.copies}</td>
                     <td>
-                        <button onclick="editBook(${book.id})">Edit</button>
+                        <button onclick="openBookForm(${book.id})">Edit</button>
                         <button onclick="deleteBook(${book.id})">Delete</button>
                     </td>
                   </tr>`;
@@ -147,8 +167,9 @@ function searchBooks() {
 }
 
 // =========================
-// 👤 VISITORS MANAGEMENT
+// VISITORS MANAGEMENT
 // =========================
+// Load Visitors
 function loadVisitors() {
   let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
   let tbody = document.querySelector("#visitorsTable tbody");
@@ -167,8 +188,19 @@ function loadVisitors() {
 }
 
 // Open Visitor Form
-function openVisitorForm() {
+function openVisitorForm(id = null) {
   document.getElementById("visitorForm").style.display = "block";
+  if (id) {
+    let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
+    let visitor = visitors.find((v) => v.id === id);
+    if (visitor) {
+      document.getElementById("visitorId").value = visitor.id;
+      document.getElementById("visitorName").value = visitor.name;
+      document.getElementById("visitorPhone").value = visitor.phone;
+    }
+  } else {
+    document.querySelector("#visitorForm form").reset();
+  }
 }
 
 // Close Visitor Form
@@ -179,6 +211,7 @@ function closeVisitorForm() {
 // Save Visitor
 function saveVisitor(event) {
   event.preventDefault();
+  let id = document.getElementById("visitorId").value;
   let name = document.getElementById("visitorName").value;
   let phone = document.getElementById("visitorPhone").value;
 
@@ -188,16 +221,48 @@ function saveVisitor(event) {
   }
 
   let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
-  let newVisitor = { id: Date.now(), name, phone };
-  visitors.push(newVisitor);
+
+  if (id) {
+    let index = visitors.findIndex((v) => v.id == id);
+    visitors[index] = { id: parseInt(id), name, phone };
+  } else {
+    let newVisitor = { id: Date.now(), name, phone };
+    visitors.push(newVisitor);
+  }
 
   localStorage.setItem("visitors", JSON.stringify(visitors));
   loadVisitors();
   closeVisitorForm();
 }
 
+// Edit Visitor
+function editVisitor(id) {
+  openVisitorForm(id);
+}
+
+// Search Visitors
+function searchVisitors() {
+  let keyword = document.getElementById("visitorSearch").value.toLowerCase();
+  let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
+  let tbody = document.querySelector("#visitorsTable tbody");
+  tbody.innerHTML = "";
+  visitors
+    .filter((visitor) => visitor.name.toLowerCase().includes(keyword))
+    .forEach((visitor) => {
+      let row = `<tr>
+                    <td>${visitor.id}</td>
+                    <td>${visitor.name}</td>
+                    <td>${visitor.phone}</td>
+                    <td>
+                        <button onclick="editVisitor(${visitor.id})">Edit</button>
+                    </td>
+                  </tr>`;
+      tbody.innerHTML += row;
+    });
+}
+
 // =========================
-// 📋 CARDS (BORROW & RETURN)
+// CARDS (BORROW & RETURN)
 // =========================
 function loadCards() {
   let cards = JSON.parse(localStorage.getItem("cards")) || [];
@@ -217,6 +282,39 @@ function loadCards() {
   });
 }
 
+// Open Card Form
+function openCardForm() {
+  document.getElementById("cardForm").style.display = "block";
+
+  let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
+  let books = JSON.parse(localStorage.getItem("books")) || [];
+
+  let visitorSelect = document.getElementById("cardVisitor");
+  let bookSelect = document.getElementById("cardBook");
+
+  visitorSelect.innerHTML = "";
+  bookSelect.innerHTML = "";
+
+  visitors.forEach((visitor) => {
+    let option = document.createElement("option");
+    option.value = visitor.name;
+    option.textContent = visitor.name;
+    visitorSelect.appendChild(option);
+  });
+
+  books.forEach((book) => {
+    let option = document.createElement("option");
+    option.value = book.name;
+    option.textContent = book.name;
+    bookSelect.appendChild(option);
+  });
+}
+
+// Close Card Form
+function closeCardForm() {
+  document.getElementById("cardForm").style.display = "none";
+}
+
 // Borrow Book
 function saveCard(event) {
   event.preventDefault();
@@ -230,6 +328,7 @@ function saveCard(event) {
 
   localStorage.setItem("cards", JSON.stringify(cards));
   loadCards();
+  closeCardForm();
 }
 
 // Return Book
@@ -241,4 +340,59 @@ function returnBook(id) {
     localStorage.setItem("cards", JSON.stringify(cards));
     loadCards();
   }
+}
+
+// =========================
+// STATISTICS
+// =========================
+function loadStatistics() {
+  let cards = JSON.parse(localStorage.getItem("cards")) || [];
+  let books = JSON.parse(localStorage.getItem("books")) || [];
+  let visitors = JSON.parse(localStorage.getItem("visitors")) || [];
+
+  // Calculate top 5 popular books
+  let bookBorrowCount = {};
+  cards.forEach((card) => {
+    if (bookBorrowCount[card.book]) {
+      bookBorrowCount[card.book]++;
+    } else {
+      bookBorrowCount[card.book] = 1;
+    }
+  });
+
+  let popularBooks = Object.keys(bookBorrowCount)
+    .sort((a, b) => bookBorrowCount[b] - bookBorrowCount[a])
+    .slice(0, 5);
+
+  let popularBooksList = document.getElementById("popularBooks");
+  popularBooksList.innerHTML = "";
+  popularBooks.forEach((bookName) => {
+    let book = books.find((b) => b.name === bookName);
+    let listItem = document.createElement("li");
+    listItem.textContent = `${book.name} by ${book.author} - Borrowed ${bookBorrowCount[bookName]} times`;
+    popularBooksList.appendChild(listItem);
+  });
+
+  // Calculate top 5 active visitors
+  let visitorBorrowCount = {};
+  cards.forEach((card) => {
+    if (visitorBorrowCount[card.visitor]) {
+      visitorBorrowCount[card.visitor]++;
+    } else {
+      visitorBorrowCount[card.visitor] = 1;
+    }
+  });
+
+  let activeVisitors = Object.keys(visitorBorrowCount)
+    .sort((a, b) => visitorBorrowCount[b] - visitorBorrowCount[a])
+    .slice(0, 5);
+
+  let activeVisitorsList = document.getElementById("activeVisitors");
+  activeVisitorsList.innerHTML = "";
+  activeVisitors.forEach((visitorName) => {
+    let visitor = visitors.find((v) => v.name === visitorName);
+    let listItem = document.createElement("li");
+    listItem.textContent = `${visitor.name} - Borrowed ${visitorBorrowCount[visitorName]} times`;
+    activeVisitorsList.appendChild(listItem);
+  });
 }
